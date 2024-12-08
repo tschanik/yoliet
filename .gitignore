@@ -1,0 +1,6 @@
+.env
+.ppk
+.txt
+.py
+package-lock.json
+node_modules

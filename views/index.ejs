@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YOliet</title>
+    <link rel="stylesheet" href="/styles.css">
+
+    <script>
+
+        function getspecialchar(language,special_char) {
+            let charater;
+            switch (language) {
+                case 'swedish':
+                    charater = ["Å","å", "Ä", "ä", "Ö","ö", "Ø", "ø"];
+                    break;
+                case 'german':
+                    charater = ["Ä","ä","Ö","ö","Ü","ü","ß"];
+                    break;
+                case 'spanish':
+                    charater = ["Á","á","É","Í","í","Ñ","ñ","Ó","ó","Ú","ú","Ü","ü","¡","¿"];
+                    break;
+                case 'french':
+                    charater = ["é","à","è","ù","â","ê","î","ô","û","ç","ë","ï","ü"];
+                    break;
+            }
+
+            for(const char of charater) {
+                const clickable = document.createElement("a");
+                const clickable_text = document.createTextNode(char);
+                clickable.appendChild(clickable_text);
+                special_char.append(clickable);
+            }
+        }
+        
+        document.addEventListener("DOMContentLoaded", () => {
+            const form = document.querySelector("form");
+            const input_field = document.getElementById("userInput");
+            const history = document.getElementById("result_history");
+            const result_div = document.getElementById("current_result");
+            const result_output = document.querySelector(".result");
+            const skeleton = document.getElementById("loading");
+            const selected = document.getElementById("learn_selected");
+            const special_char = document.getElementById("special");
+            const impressum = document.getElementById("impressum");
+            const showimpressum = document.getElementById("showimpressum");
+            var points = 0;
+            var correction = "";
+            input_field.focus();
+            input_field.select();
+
+            window.onload = getspecialchar("german",special_char);
+            
+            selected.addEventListener("change", event => {
+                const language = selected.value;
+                input_field.placeholder = 'Type a sentence in ' + language.charAt(0).toUpperCase() + language.slice(1) + '.';
+                
+                special_char.innerHTML = "";
+                getspecialchar(language,special_char);
+
+            });
+
+            showimpressum.addEventListener("click", event => {
+                const corrected = document.createElement("h3");
+                corrected.className = "correction";
+                correction = "Impressum";
+                corrected.innerText = correction;
+                result_div.appendChild(corrected);
+                result_output.innerHTML = impressum.innerHTML;
+
+            });
+            
+            special_char.addEventListener("click", event => {
+                input_field.value += event.target.innerText;
+            });
+            
+            form.addEventListener("submit", async (event) => {
+                    event.preventDefault(); // Standard-Formular-Absenden verhindern 
+                    // bis die Anfrage da ist, schonmal ein span anlegen um den Input anzuzeigen
+                    const showinput = document.createElement("span");
+                    showinput.className = "r_userInput";
+                    showinput.innerText = input_field.value;
+                    input_field.blur(); // Focus entfernen
+                    result_div.appendChild(showinput);
+
+                    const formData = new FormData(form);
+                    skeleton.style.display = "block"; // Anzeigen dass etwas passiert
+                    input_field.value = ""; // Input Text leeren
+                    const response = await fetch("/submit", {
+                        method: "POST",
+                        body: new URLSearchParams(formData),
+                    });
+                    
+                    // Stelle die Anfrage an die API
+                    const result = await response.json();
+                    
+                    skeleton.style.display = "none";
+                    points = result["points"];
+                    showinput.innerText += ' | ' + Math.round(points*100,0) + ' Punkte';
+
+                    const corrected = document.createElement("h3");
+                    corrected.className = "correction";
+                    correction = result["title"];
+                    corrected.innerText = correction;
+                    result_div.appendChild(corrected);
+
+                    result_output.innerHTML += result["blabla"];
+            });
+            
+            input_field.addEventListener("focus", (event) => {
+                // wenn es ein result gegeben hat, soll das historiesiert werden
+                if(result_output.innerText.trim() !== "") {
+                    const newbutton = document.createElement("button");
+                    newbutton.textContent = correction;
+                    newbutton.className = "accordion";
+
+                    // Ändere die Farbe der Schrift, je nach dem wie gut die Eingabe war
+                    newbutton.setAttribute("style",`color: rgba(255, 255, 255, ${1.25 - points})`);
+                    history.appendChild(newbutton);
+
+                    newbutton.addEventListener("click", function() {
+                        newbutton.classList.toggle("active");
+                        const panel = newbutton.nextElementSibling;
+                        if (panel.style.display === "block") {
+                        panel.style.display = "none";
+                        } else {
+                        panel.style.display = "block";
+                        }
+                    });
+                    
+                    const panel = newbutton.nextElementSibling;
+                    const newpanel = document.createElement("div");
+                    newpanel.className = "panel";
+                    newpanel.innerHTML = result_output.innerHTML;
+                    result_output.innerHTML = "";
+                    history.appendChild(newpanel);
+                } 
+            });
+            
+        });
+
+    </script>
+    
+</head>
+<body>
+    
+    <div class="container">
+        <header></header>
+        <main>
+            <div id="result_history">
+            </div>
+
+            <div id="special">
+            </div>
+            <form autocomplete="off" action="/submit" id="mainForm" method="POST">
+                <div class="search-container">
+
+                    <!--Also eigentlich wollte ich den rechts von der Eingabe haben, aber bei mobilen Browsern wird das versenden von forms mit enter verhindert-->
+                    <div class="select-container">
+                        <label for="ich_lerne">Ich lerne</label>
+                        <select name="learn" id="learn_selected" form="mainForm" required="false">
+                            <option value="german">Deutsch</option>
+                            <option value="english">Englisch</option>
+                            <option value="spanish">Spanisch</option>
+                            <option value="french">Französisch</option>
+                            <option value="italian">Italienisch</option>
+                            <option value="swedish">Schwedisch</option>
+                        </select>
+                    </div>
+
+                    <input id="userInput" maxlength="150" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-label="search" type="text" name="userInput" aria-invalid="false" placeholder="Type a sentence in German." required />
+                    
+                </div>
+                <button type="submit" hidden>Submit</button>
+            </form>
+            
+            <div class="result" id="current_result">
+                
+            </div>
+            <div id="loading">
+                <div class="skeleton" style="width: 60%; height: 1em; margin: 1em;"></div>
+                <div class="skeleton" style="width: 80%; height: 2em; margin: 1em;"></div>
+                <div class="skeleton" style="width: 80%; height: 8em; margin: 1em;"></div>
+            </div>
+        </main>
+            <div id="impressum">
+                <h3>
+                    Impressum
+                </h3>
+                <p>Janik Scheuring</p>
+                <p>Treidelweg 3</p>
+                <p>21079 Hamburg</p>
+                <a href="info@igcflying.de">info@igcflying.de</a>
+            </div>
+            <footer>
+                <div class="impressum">
+                    <div>Made with ♡ in Hamburg for Yovana</div>
+                    <div><a id="showimpressum">Impressum</a></div>
+                    
+                </div>
+            </footer>
+    </div>
+</body>
+</html>
