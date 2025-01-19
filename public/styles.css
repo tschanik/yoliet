@@ -170,6 +170,48 @@ th,td {
     padding: 0.25rem;
 }
 
+.memory-game {
+    display: grid;
+    justify-content: center;
+    grid-template-columns: repeat(4, 100px);
+    grid-gap: 10px;
+}
+.memory-card {
+    width: 100px;
+    height: 100px;
+    background-color: rgba(0, 0, 0, 0.75);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transform: scale(1);
+    transition: transform 0.3s, border-color 0.3s;
+    position: relative;
+    border: .25rem solid transparent;
+    box-sizing: border-box;
+}
+.memory-card:active {
+    transform: scale(0.95);
+}
+.memory-card.flipped {
+    background-color: #eae4dd;
+    cursor: default;
+}
+.memory-card span {
+    display: none;
+    font-size: 2rem;
+}
+
+.memory-card[data-type="text"] span {
+    font-size: 1rem;
+    text-align: center;
+    color: black;
+}
+.memory-card.flipped span {
+    display: block;
+}
+
+
 footer {
     color: #9aa0a6;
     padding-top: 1.5rem;

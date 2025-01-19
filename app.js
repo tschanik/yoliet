@@ -32,6 +32,44 @@ function extractFirstapostroph(input) {
     return match ? match[1] : null; // Gibt nur die gefundene Gruppe (ohne Anführungszeichen) zurück
 }
 
+// GET für das Memory
+app.get("/api/memory", (req, res) => {
+    console.log("es geht los")
+    
+    var request = require('request');
+    
+    var options = {
+        'method': 'POST',
+        'url': `https://api.infomaniak.com/1/ai/${topsecret.parsed.SECRET}/openai/chat/completions`,
+        'headers': {
+          'Authorization': `Bearer ${topsecret.parsed.TOKEN}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          "messages": [
+              {
+                "content": `Du bist eine KI, die eine Liste an Wörtern mit dem Artikel ausgibt und den und das entsprechende icon sowie eine einzigartige Farbe im hex Format. Gib nur die Liste ist in einem JSON Format zurück. [{icon: 'Icon', text:'Artikel Wort', color:'Farbe'}]`,
+                "role": "system"
+              },
+              {
+                  "content": "Gib mir 8 Wörter",
+                  "role": "user"
+              }
+          ],
+          "model": "mixtral"
+        })  
+
+    };
+
+    request(options, function (error, response) {
+      if (error) throw new Error(error);
+      var result = JSON.parse(response.body)["choices"][0]["message"]["content"];
+      console.log(result);
+      res.send(result);
+    });
+
+});
+
 // POST-Route für das Formular
 app.post("/submit", (req, res) => {
     console.log("gestartet")

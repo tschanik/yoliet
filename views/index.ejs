@@ -136,8 +136,87 @@
                     history.appendChild(newpanel);
                 } 
             });
+
+            async function getMemoryData() {
+                const result = await fetch('/api/memory');
+                const pairs = await result.json();
+
+                const cards = [...pairs.map(pair => ({ content: pair.icon, type: 'icon', color: pair.color })),
+                ...pairs.map(pair => ({ content: pair.text, type: 'text', color: pair.color }))];
+                
+                // Shuffle the cards
+                cards.sort(() => Math.random() - 0.5);
+                const gameBoard = document.querySelector('.memory-game');
+
+                cards.forEach(cardData => {
+                    const card = document.createElement('div');
+                    card.classList.add('memory-card');
+                    card.innerHTML = `<span>${cardData.content}</span>`;
+                    card.dataset.type = cardData.type;
+                    card.dataset.color = cardData.color;
+                    gameBoard.appendChild(card);
+                });
+
+                let firstCard, secondCard;
+                let lockBoard = false;
+
+                function flipCard() {
+                    if (lockBoard || this === firstCard) return;
+
+                    this.classList.add('flipped');
+                    this.style.borderColor = this.dataset.color;
+
+                    if (!firstCard) {
+                        firstCard = this;
+                        return;
+                    }
+
+                    secondCard = this;
+                    checkForMatch();
+                }
+
+                function checkForMatch() {
+                    const isMatch = pairs.some(pair =>
+                        (firstCard.dataset.type === 'icon' && secondCard.dataset.type === 'text' && firstCard.innerText.trim() === pair.icon && secondCard.innerText.trim() === pair.text) ||
+                        (firstCard.dataset.type === 'text' && secondCard.dataset.type === 'icon' && firstCard.innerText.trim() === pair.text && secondCard.innerText.trim() === pair.icon)
+                    );
+
+                    isMatch ? disableCards() : unflipCards();
+                }
+
+                function disableCards() {
+                    firstCard.removeEventListener('click', flipCard);
+                    secondCard.removeEventListener('click', flipCard);
+                    resetBoard();
+                }
+
+                function unflipCards() {
+                    lockBoard = true;
+                    setTimeout(() => {
+                        firstCard.classList.remove('flipped');
+                        secondCard.classList.remove('flipped');
+                        firstCard.style.borderColor = 'transparent';
+                        secondCard.style.borderColor = 'transparent';
+                        resetBoard();
+                    }, 1000);
+                }
+
+                function resetBoard() {
+                    [firstCard, secondCard, lockBoard] = [null, null, false];
+                }
+
+                document.querySelectorAll('.memory-card').forEach(card => {
+                    card.addEventListener('click', flipCard);
+                });
+
+            }
+
+            getMemoryData();
             
         });
+
+
+        
 
     </script>
     
@@ -173,15 +252,19 @@
                 </div>
                 <button type="submit" hidden>Submit</button>
             </form>
+
             
+
             <div class="result" id="current_result">
-                
+                <div class="memory-game"></div>
             </div>
             <div id="loading">
                 <div class="skeleton" style="width: 60%; height: 1em; margin: 1em;"></div>
                 <div class="skeleton" style="width: 80%; height: 2em; margin: 1em;"></div>
                 <div class="skeleton" style="width: 80%; height: 8em; margin: 1em;"></div>
             </div>
+
+
         </main>
             <div id="impressum">
                 <h3>
