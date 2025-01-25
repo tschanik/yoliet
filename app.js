@@ -37,7 +37,7 @@ app.get("/api/memory", (req, res) => {
     console.log("es geht los")
     
     var request = require('request');
-    
+
     var options = {
         'method': 'POST',
         'url': `https://api.infomaniak.com/1/ai/${topsecret.parsed.SECRET}/openai/chat/completions`,
@@ -48,7 +48,7 @@ app.get("/api/memory", (req, res) => {
         body: JSON.stringify({
           "messages": [
               {
-                "content": `Du bist eine KI, die eine Liste an Wörtern mit dem Artikel ausgibt und den und das entsprechende icon sowie eine einzigartige Farbe im hex Format. Gib nur die Liste ist in einem JSON Format zurück. [{icon: 'Icon', text:'Artikel Wort', color:'Farbe'}]`,
+                "content": `Du bist eine KI, die eine Liste an Wörtern mit dem Artikel ausgibt und den und das entsprechende icon sowie eine einzigartige Farbe im hex Format. Gib nur die Liste ist in einem JSON Format zurück. Beispiel: [{"icon": "🎨","text": "die Farben","color": "#DA70D6"}]`,
                 "role": "system"
               },
               {

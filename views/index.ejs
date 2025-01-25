@@ -1,9 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YOliet</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>YOliet, learn to write in in a foreign language with the help of AI</title>
+    <meta name="robots" content="index, follow">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="description" content="Here you can practise writing and receive direct feedback from an AI with helpful tips on grammar. Just type a sentence in a language you want to learn, to get feedback from AI.">
+    <meta name="keyword" content="ai,writing,gpt,grammar,practise writing,foreign language,memory,german B2,declination,conjugation,spelling">
+    <meta property="og:description" content="A conversational AI system that help you to write in a foreign language.">
+    <meta property="og:title" content="YOliet">
+    <meta property="og:image" content="/images/YOliet.ico">
+    <meta property="og:url" content="https://yoliet.de">
+    <link rel="icon" type="image/x-icon" href="/images/YOliet.ico">
     <link rel="stylesheet" href="/styles.css">
 
     <script>
@@ -26,7 +34,9 @@
             }
 
             for(const char of charater) {
-                const clickable = document.createElement("a");
+                const clickable = document.createElement("button");
+                clickable.setAttribute("type","button");
+                clickable.className = "umlaute";
                 const clickable_text = document.createTextNode(char);
                 clickable.appendChild(clickable_text);
                 special_char.append(clickable);
@@ -237,7 +247,7 @@
                     <!--Also eigentlich wollte ich den rechts von der Eingabe haben, aber bei mobilen Browsern wird das versenden von forms mit enter verhindert-->
                     <div class="select-container">
                         <label for="ich_lerne">Ich lerne</label>
-                        <select name="learn" id="learn_selected" form="mainForm" required="false">
+                        <select name="learn" aria-label="ich_lerne" id="learn_selected" form="mainForm" required="false">
                             <option value="german">Deutsch</option>
                             <option value="english">Englisch</option>
                             <option value="spanish">Spanisch</option>
@@ -256,6 +266,7 @@
             
 
             <div class="result" id="current_result">
+                <h1>Memory</h1>
                 <div class="memory-game"></div>
             </div>
             <div id="loading">

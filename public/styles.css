@@ -13,6 +13,10 @@ html, body {
     padding-top: 20%;
 }
 
+.umlaute {
+    all: unset;
+}
+
 /* Style the buttons that are used to open and close the accordion panel */
 .accordion {
     background-color: rgba(0, 0, 0, 0.25);
@@ -43,6 +47,7 @@ html, body {
 
 .container {
     width: 90vh;
+    max-width: 100%;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -172,13 +177,12 @@ th,td {
 
 .memory-game {
     display: grid;
-    justify-content: center;
-    grid-template-columns: repeat(4, 100px);
-    grid-gap: 10px;
+    grid-template-columns: repeat(4, 95px);
+    gap: 4px;
 }
 .memory-card {
-    width: 100px;
-    height: 100px;
+    width: 95px;
+    height: 95px;
     background-color: rgba(0, 0, 0, 0.75);
     display: flex;
     justify-content: center;
