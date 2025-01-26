@@ -15,6 +15,7 @@ html, body {
 
 .umlaute {
     all: unset;
+    padding: .25rem;
 }
 
 .select_extras {
