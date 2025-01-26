@@ -80,17 +80,19 @@
             });
 
             showmemory.addEventListener("click", event => {
-                move_to_accordion();
+                result_output.innerHTML = "";
                 const corrected = document.createElement("h3");
-                corrected.className = "memory-game";
                 correction = "Memory";
                 corrected.innerText = correction;
                 result_div.appendChild(corrected);
-                result_output.innerHTML += "test";
+                const addDiv = document.createElement("div");
+                addDiv.className = "memory-game";
+                result_div.appendChild(addDiv);
+                getMemoryData();
             });
 
             text2fill.addEventListener("click", event => {
-                move_to_accordion();
+                result_output.innerHTML = "";
                 const corrected = document.createElement("h3");
                 correction = "Text";
                 corrected.innerText = correction;
@@ -204,6 +206,7 @@
             });
             
             form.addEventListener("submit", async (event) => {
+                    move_to_accordion();
                     event.preventDefault(); // Standard-Formular-Absenden verhindern 
                     // bis die Anfrage da ist, schonmal ein span anlegen um den Input anzuzeigen
                     const showinput = document.createElement("span");
@@ -275,7 +278,6 @@
 
                 const result = await fetch('/api/memory');
                 const pairs = await result.json();
-
                 skeleton.style.display = "none";
 
                 const cards = [...pairs.map(pair => ({ content: pair.icon, type: 'icon', color: pair.color })),
@@ -347,12 +349,8 @@
                 });
 
             }
-
-            //getMemoryData();
-            
+ 
         });
-
-
         
 
     </script>
@@ -400,6 +398,27 @@
             
 
             <div class="result" id="current_result">
+               <h3 class="correction">Learn and Improve with AI-Powered Language Feedback</h3>
+                <h4>
+                Welcome to YOliet, your personal AI-powered language learning companion!<br>
+                </h4>
+                Have you ever wanted to practice a foreign language but weren’t sure if you were on the right track? With Yoliet, you can:<br>
+                <ul>
+                    <li>
+                        <h5>Submit a Text:</h5> Write a sentence, or a simple paragraph in the language you're learning. YOliet will act as your virtual teacher, analyzing your writing, correcting mistakes, and offering tips to improve your grammar, vocabulary, and style.
+                    </li>
+                    <li>
+                        <h5>Play Memory Games:</h5> Strengthen your vocabulary and improve recall with engaging memory games tailored to your learning level.
+                    </li>
+                    <li>
+                        <h5>Fill in the Gaps:</h5> Practice grammar and vocabulary by completing gap-fill exercises, helping you master the nuances of your target language.
+                    </li>
+                </ul>
+                YOliet is more than just a tool—it’s your interactive language coach. It provides constructive feedback, explanations, and personalized exercises to help you write better, think more fluently, and truly enjoy the process of learning a new language.<br>
+
+                Whether you're a student, self-learner, or language enthusiast, Yoliet is here to make language learning fun, effective, and rewarding.<br>
+                Try it now and take your language skills to the next level!
+                
             </div>
             <div id="loading">
                 <div class="skeleton" style="width: 60%; height: 1em; margin: 1em;"></div>

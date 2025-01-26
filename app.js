@@ -45,8 +45,8 @@ app.get("/api/tex2fill", (req, res) => {
         };
 
         const model = genAI.getGenerativeModel({
-            model: "gemini-1.5-flash-8b",
-            systemInstruction: "Du bist eine KI die mir beim Deutsch lernen hilft. Das Niveau ist B2. Gebe die Tipps auf englisch zurück. Nutze das JSON Format: {'text': 'Ein deutscher Lückentext. Die Lücken mit ______ darstellen', 'answers': {'1': [Mehrere Lösungsmöglichkeiten]}, 'solution': '1': Lösung, 'tipps': Tipps auf englisch}",
+            model: "gemini-2.0-flash-exp",
+            systemInstruction: "Du bist eine KI die mir beim Deutsch lernen hilft. Das Niveau ist B2. Gebe die Tipps auf englisch zurück. Nutze das JSON Format: {'text': 'Ein deutscher Lückentext. Die Lücken mit ______ darstellen', 'answers': {'1': [Mehrere Lösungsmöglichkeiten]}, 'solution': '1': Lösung, 'tipps': [Tipps auf englisch]}",
             generationConfig: generationConfig,
         });
       
