@@ -68,6 +68,29 @@ app.get("/api/tex2fill", (req, res) => {
 // GET für das Memory
 app.get("/api/memory", (req, res) => {
 
+    async function run() {
+        const generationConfig = {
+            responseMimeType: "application/json",
+        };
+
+        const model = genAI.getGenerativeModel({
+            model: "gemini-1.5-flash-8b",
+            systemInstruction: `Du bist eine KI, die eine Liste an Wörtern mit dem Artikel ausgibt und den und das entsprechende icon sowie eine einzigartige Farbe im hex Format. Gib nur die Liste ist in einem JSON Format zurück. Beispiel: [{"icon": "🎨","text": "die Farben","color": "#DA70D6"}]`,
+            generationConfig: generationConfig,
+        });
+      
+        const prompt = "Gib mir 8 Wörter";
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        const text = response.text();
+        console.log(response.text());
+        
+        return(text);
+    }
+
+    var result = run();
+    result.then(resu => res.send(resu));
+    /*
     var request = require('request');
 
     var options = {
@@ -98,6 +121,7 @@ app.get("/api/memory", (req, res) => {
       var result = JSON.parse(response.body)["choices"][0]["message"]["content"];
       res.send(result);
     });
+    */
 
 });
 
