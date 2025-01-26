@@ -11,6 +11,10 @@ const bodyParser = require("body-parser"); // Für POST-Daten
 const { send } = require("process");
 const app = express();
 
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+// Access your API key as an environment variable (see "Set up your API key" above)
+const genAI = new GoogleGenerativeAI(topsecret.parsed.API_KEY_GOOGLE);
+
 // Middleware für POST-Daten
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -32,10 +36,38 @@ function extractFirstapostroph(input) {
     return match ? match[1] : null; // Gibt nur die gefundene Gruppe (ohne Anführungszeichen) zurück
 }
 
+// GET für den Lückentext
+app.get("/api/tex2fill", (req, res) => {
+    
+    async function run() {
+        const generationConfig = {
+            responseMimeType: "application/json",
+        };
+
+        const model = genAI.getGenerativeModel({
+            model: "gemini-1.5-flash-8b",
+            systemInstruction: "Du bist eine KI die mir beim Deutsch lernen hilft. Das Niveau ist B2. Gebe die Tipps auf englisch zurück. Nutze das JSON Format: {'text': 'Ein deutscher Lückentext. Die Lücken mit ______ darstellen', 'answers': {'1': [Mehrere Lösungsmöglichkeiten]}, 'solution': '1': Lösung, 'tipps': Tipps auf englisch}",
+            generationConfig: generationConfig,
+        });
+      
+        const prompt = "Gib mir ein Lückentext";
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        const text = response.text();
+        console.log(response.text());
+        //const text = response["candidates"][0]["content"]["parts"][0]["text"];
+        
+        return(text);
+    }
+
+    var result = run();
+    result.then(resu => res.send(resu));
+
+})
+
 // GET für das Memory
 app.get("/api/memory", (req, res) => {
-    console.log("es geht los")
-    
+
     var request = require('request');
 
     var options = {
@@ -64,7 +96,6 @@ app.get("/api/memory", (req, res) => {
     request(options, function (error, response) {
       if (error) throw new Error(error);
       var result = JSON.parse(response.body)["choices"][0]["message"]["content"];
-      console.log(result);
       res.send(result);
     });
 

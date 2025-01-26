@@ -77,7 +77,126 @@
                 corrected.innerText = correction;
                 result_div.appendChild(corrected);
                 result_output.innerHTML = impressum.innerHTML;
+            });
 
+            showmemory.addEventListener("click", event => {
+                move_to_accordion();
+                const corrected = document.createElement("h3");
+                corrected.className = "memory-game";
+                correction = "Memory";
+                corrected.innerText = correction;
+                result_div.appendChild(corrected);
+                result_output.innerHTML += "test";
+            });
+
+            text2fill.addEventListener("click", event => {
+                move_to_accordion();
+                const corrected = document.createElement("h3");
+                correction = "Text";
+                corrected.innerText = correction;
+                result_div.appendChild(corrected);
+
+                // Funktion, um ein HTML Dropdown-Menü mit Textlücken und Validierung zu generieren
+                function generateDropdownWithValidation(data) {
+                    const { text, answers, solution, tipps } = data;
+
+                    // Hilfsfunktion, um ein Dropdown-Menü zu generieren
+                    function createDropdown(id, options) {
+                        const select = document.createElement('select');
+                        select.id = `dropdown-${id}`;
+                        select.setAttribute('data-answer', solution[id]);
+                        select.style.margin = '0 5px';
+
+                        // Standardoption
+                        const defaultOption = document.createElement('option');
+                        defaultOption.value = '';
+                        defaultOption.textContent = '---';
+                        defaultOption.disabled = true;
+                        defaultOption.selected = true;
+                        select.appendChild(defaultOption);
+
+                        // Optionen aus den Antworten generieren
+                        options.forEach(option => {
+                            const opt = document.createElement('option');
+                            opt.value = option;
+                            opt.textContent = option;
+                            select.appendChild(opt);
+                        });
+
+                        // Validierungslogik bei Änderung des Dropdowns
+                        select.addEventListener('change', (e) => {
+                            const selectedValue = e.target.value;
+                            const correctAnswer = e.target.getAttribute('data-answer');
+
+                            if (selectedValue === correctAnswer) {
+                                e.target.style.backgroundColor = 'lightgreen';
+                            } else {
+                                e.target.style.backgroundColor = 'lightcoral';
+                            }
+                        });
+
+                        return select;
+                    }
+
+                    // Text mit Dropdown-Menüs erstellen
+                    const container = result_div;
+                    const textParts = text.split(/_+/);
+
+                    textParts.forEach((part, index) => {
+                        container.appendChild(document.createTextNode(part));
+
+                        if (answers[index + 1]) {
+                            const dropdown = createDropdown(index + 1, answers[index + 1]);
+                            container.appendChild(dropdown);
+                        }
+                    });
+
+                    // Tipps hinzufügen
+                    const tipsContainer = result_div;
+                    linebreak = document.createElement("br");
+                    tipsContainer.appendChild(linebreak);
+                    const tipsTitle = document.createElement('h3');
+                    tipsTitle.style.marginTop = "2rem";
+                    tipsTitle.textContent = 'Tipps:';
+                    tipsContainer.appendChild(tipsTitle);
+
+                    const tipsList = document.createElement('ul');
+                    tipps.forEach(tip => {
+                        const tipItem = document.createElement('li');
+                        tipItem.textContent = tip;
+                        tipsList.appendChild(tipItem);
+                    });
+                    tipsContainer.appendChild(tipsList);
+
+                    container.appendChild(tipsContainer);
+
+                    return container;
+                }
+
+                async function getText() {
+                    skeleton.style.display = "block"; // Anzeigen dass etwas passiert
+                    const result = await fetch('/api/tex2fill');
+                    const data = await result.json();
+                    skeleton.style.display = "none";
+                    // Funktion aufrufen und in den DOM einfügen
+                    document.body.appendChild(generateDropdownWithValidation(data));
+                    //result_output.innerHTML += text["text"];
+                    //result_output.innerHTML += "<br><br>";
+                    //result_output.innerHTML += text["tipps"][0];
+                }
+                /*
+                const text = {"text": "Der  ______ Student besuchte jeden Tag die Bibliothek, um sich auf die Prüfung vorzubereiten. Er las ______ Bücher und ______ Notizen. Er arbeitete ______ und ______, um alles zu verstehen.  Seine ______ war hoch.  Am Prüfungstag war er ______.", "answers": {"1": ["fleißige", "fleißiger", "fleißigen", "fleißigsten"], "2": ["viele", "vielen", "viel", "vielleicht"], "3": ["machte", "machten", "macht", "machen"], "4": ["hart", "harten", "härtesten", "härter"], "5": ["konzentriert", "konzentrierte", "konzentriertem", "konzentriertesten"], "6": "Motivation", "7": ["ruhig", "ruhigere", "ruhigsten", "ruhiger"]}, "solution": {"1": "fleißige", "2": "viele", "3": "machte", "4": "hart", "5": "konzentriert", "6": "Motivation", "7": "ruhig"}, "tipps": ["To fill in the gaps, think about the grammatical function of each word.  Pay attention to the gender and number of the nouns and the verb endings. Consider the context of the sentence and the meaning you want to convey.  Review your German grammar rules for noun declension and verb conjugation to ensure accuracy.  If you're unsure about a word, look it up in a dictionary. Use online resources or practice exercises to reinforce your understanding of German grammar and vocabulary."]};
+                const data = {
+                    text: text["text"],
+                    answers: text["answers"],
+                    solution: text["solution"],
+                    tipps: text["tipps"]
+                };
+                document.body.appendChild(generateDropdownWithValidation(data));
+                */
+                getText();
+
+                
             });
             
             special_char.addEventListener("click", event => {
@@ -116,8 +235,8 @@
 
                     result_output.innerHTML += result["blabla"];
             });
-            
-            input_field.addEventListener("focus", (event) => {
+
+            function move_to_accordion() {
                 // wenn es ein result gegeben hat, soll das historiesiert werden
                 if(result_output.innerText.trim() !== "") {
                     const newbutton = document.createElement("button");
@@ -144,12 +263,20 @@
                     newpanel.innerHTML = result_output.innerHTML;
                     result_output.innerHTML = "";
                     history.appendChild(newpanel);
-                } 
+                }
+            }
+            
+            input_field.addEventListener("focus", (event) => {
+                move_to_accordion();
             });
 
             async function getMemoryData() {
+                skeleton.style.display = "block"; // Anzeigen dass etwas passiert
+
                 const result = await fetch('/api/memory');
                 const pairs = await result.json();
+
+                skeleton.style.display = "none";
 
                 const cards = [...pairs.map(pair => ({ content: pair.icon, type: 'icon', color: pair.color })),
                 ...pairs.map(pair => ({ content: pair.text, type: 'text', color: pair.color }))];
@@ -221,7 +348,7 @@
 
             }
 
-            getMemoryData();
+            //getMemoryData();
             
         });
 
@@ -263,11 +390,16 @@
                 <button type="submit" hidden>Submit</button>
             </form>
 
+           
+            <button class="select_extras" id="showmemory">
+                <span class="">Memory</span>
+            </button>
+            <button class="select_extras" id="text2fill">
+                <span class="">Text</span>
+            </button>
             
 
             <div class="result" id="current_result">
-                <h1>Memory</h1>
-                <div class="memory-game"></div>
             </div>
             <div id="loading">
                 <div class="skeleton" style="width: 60%; height: 1em; margin: 1em;"></div>

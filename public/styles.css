@@ -17,6 +17,11 @@ html, body {
     all: unset;
 }
 
+.select_extras {
+    margin: .25rem;
+    padding: .25rem;
+}
+
 /* Style the buttons that are used to open and close the accordion panel */
 .accordion {
     background-color: rgba(0, 0, 0, 0.25);
