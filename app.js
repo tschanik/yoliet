@@ -42,6 +42,7 @@ app.get("/api/tex2fill", (req, res) => {
     async function run() {
         const generationConfig = {
             responseMimeType: "application/json",
+            temperature: 0,
         };
 
         const model = genAI.getGenerativeModel({
@@ -71,10 +72,11 @@ app.get("/api/memory", (req, res) => {
     async function run() {
         const generationConfig = {
             responseMimeType: "application/json",
+            temperature: 0,
         };
 
         const model = genAI.getGenerativeModel({
-            model: "gemini-1.5-flash-8b",
+            model: "gemini-2.0-flash-exp",
             systemInstruction: `Du bist eine KI, die eine Liste an Wörtern mit dem Artikel ausgibt und den und das entsprechende icon sowie eine einzigartige Farbe im hex Format. Gib nur die Liste ist in einem JSON Format zurück. Beispiel: [{"icon": "🎨","text": "die Farben","color": "#DA70D6"}]`,
             generationConfig: generationConfig,
         });
