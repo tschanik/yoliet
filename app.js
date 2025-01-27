@@ -37,7 +37,10 @@ function extractFirstapostroph(input) {
 }
 
 // GET für den Lückentext
-app.get("/api/tex2fill", (req, res) => {
+app.post("/api/tex2fill", (req, res) => {
+
+    const userLearning = req.body.learn;
+    console.log(userLearning);
     
     async function run() {
         const generationConfig = {
@@ -67,7 +70,10 @@ app.get("/api/tex2fill", (req, res) => {
 })
 
 // GET für das Memory
-app.get("/api/memory", (req, res) => {
+app.post("/api/memory", (req, res) => {
+
+    const userLearning = req.body.learn;
+    console.log(userLearning);
 
     async function run() {
         const generationConfig = {

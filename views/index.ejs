@@ -92,6 +92,27 @@
                 getMemoryData();
             });
 
+            // Helper function to submit the form dynamically
+            function submitForm(actionUrl) {
+                
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = actionUrl;
+
+                // Add the selected dropdown value
+                const learnInput = document.createElement('input');
+                learnInput.type = 'hidden';
+                learnInput.name = 'learn';
+                learnInput.value = selected.value;
+                form.appendChild(learnInput);
+
+                // Append the form to the body and submit it
+                document.body.appendChild(form);
+
+                const formData = new FormData(form);
+                return new URLSearchParams(formData);
+            }
+
             text2fill.addEventListener("click", event => {
                 result_output.innerHTML = "";
                 const corrected = document.createElement("h3");
@@ -178,7 +199,13 @@
 
                 async function getText() {
                     skeleton.style.display = "block"; // Anzeigen dass etwas passiert
-                    const result = await fetch('/api/tex2fill');
+                    //const formData = new FormData(submitForm('/text2fill'));
+                    //const result = await fetch('/api/tex2fill');
+                    const result = await fetch("/api/tex2fill", {
+                        method: "POST",
+                        body: submitForm('/text2fill'),
+                    });
+
                     const data = await result.json();
                     skeleton.style.display = "none";
                     // Funktion aufrufen und in den DOM einfügen
@@ -206,6 +233,7 @@
                 input_field.value += event.target.innerText;
             });
             
+
             form.addEventListener("submit", async (event) => {
                     move_to_accordion();
                     event.preventDefault(); // Standard-Formular-Absenden verhindern 
@@ -276,8 +304,10 @@
 
             async function getMemoryData() {
                 skeleton.style.display = "block"; // Anzeigen dass etwas passiert
-
-                const result = await fetch('/api/memory');
+                const result = await fetch("/api/memory", {
+                    method: "POST",
+                    body: submitForm('/memory'),
+                });
                 const pairs = await result.json();
                 skeleton.style.display = "none";
 
@@ -389,10 +419,10 @@
                 <button type="submit" hidden>Submit</button>
             </form>
 
-           
-            <button class="select_extras" id="showmemory">
+            <button class="select_extras" id="showmemory" type="submit">
                 <span class="">Memory</span>
             </button>
+            
             <button class="select_extras" id="text2fill">
                 <span class="">Text</span>
             </button>
