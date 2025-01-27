@@ -228,6 +228,33 @@
 
                 
             });
+
+            exam.addEventListener("click", event => {
+                result_output.innerHTML = "";
+                const corrected = document.createElement("h3");
+                correction = "Exam Simulation";
+                corrected.innerText = correction;
+                result_div.appendChild(corrected);
+                async function getExam() {
+                    skeleton.style.display = "block"; // Anzeigen dass etwas passiert
+                    const result = await fetch("/api/exam", {
+                        method: "POST",
+                        body: submitForm('/exam'),
+                    });
+
+                    const data = await result.json();
+                    skeleton.style.display = "none";
+                    
+                    result_output.innerHTML += data["instructions_de"];
+                    result_output.innerHTML += "<br><br>";
+                    result_output.innerHTML += data["instructions_en"];
+                    result_output.innerHTML += "<br><br>";
+                    result_output.innerHTML += data["hints_en"][0];
+                }
+
+                getExam();
+
+            })
             
             special_char.addEventListener("click", event => {
                 input_field.value += event.target.innerText;
@@ -425,6 +452,10 @@
             
             <button class="select_extras" id="text2fill">
                 <span class="">Text</span>
+            </button>
+
+            <button class="select_extras" id="exam">
+                <span class="">Exam Simulation</span>
             </button>
             
 

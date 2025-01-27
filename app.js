@@ -133,6 +133,67 @@ app.post("/api/memory", (req, res) => {
 
 });
 
+
+app.post("/api/exam", (req, res) => {
+    
+    const model = genAI.getGenerativeModel({
+        model: "gemini-2.0-flash-exp",
+        systemInstruction: "Du bist ein Deutschlehrer und hilfst dabei mich auf die B2 Prüfung vorzubereiten. Gib mir dafür eine Schreibaufgabe aus einer B2 Prüfung. Gib dabei Hilfestellungen in englisch. Wenn ich meine Antwort einreiche, korrigiere meine Fehler. Das Format: {'task_type': 'writing','level: 'B2','topic': 'Topic','instructions_de': 'Task', 'instructions_en': 'Summary in english','hints_en': ['hint 1', 'hint n']}",
+    });
+    
+    const generationConfig = {
+        temperature: 0.8,
+        topP: 0.95,
+        topK: 40,
+        maxOutputTokens: 8192,
+        responseMimeType: "application/json",
+    };
+    
+    async function run() {
+        const chatSession = model.startChat({
+            generationConfig,
+            //history: 
+            /*
+            [
+            {
+                role: "user",
+                parts: [
+                {text: "ich möchte üben"},
+                ],
+            },
+            {
+                role: "model",
+                parts: [
+                {text: "```json\n[\n  {\n    \"task_type\": \"writing\",\n    \"level\": \"B2\",\n    \"topic\": \"Meinungen austauschen\",\n    \"instructions_de\": \"Sie haben in einer Zeitschrift einen Artikel zum Thema 'Freiwilligenarbeit im Ausland' gelesen. In einem Internetforum diskutieren Sie nun mit anderen Teilnehmern über Ihre Meinung zu diesem Thema. Schreiben Sie einen Forumsbeitrag (ca. 200 Wörter), in dem Sie auf folgende Punkte eingehen: \\n\\n* Beschreiben Sie kurz die Vor- und Nachteile von Freiwilligenarbeit im Ausland, die im Artikel genannt werden.\\n* Erklären Sie Ihre eigene Meinung zu diesem Thema.\\n* Berichten Sie von einer persönlichen Erfahrung oder einer Erfahrung von Freunden/Bekannten mit Freiwilligenarbeit im Ausland.\\n* Geben Sie eine Empfehlung für oder gegen Freiwilligenarbeit im Ausland und begründen Sie diese.\",\n    \"instructions_en\": \"You have read an article in a magazine about 'Volunteering Abroad'. In an online forum, you are now discussing your opinion on this topic with other participants. Write a forum post (approx. 200 words) in which you address the following points:\\n\\n* Briefly describe the advantages and disadvantages of volunteering abroad mentioned in the article.\\n* Explain your own opinion on this topic.\\n* Report on a personal experience or an experience of friends/acquaintances with volunteering abroad.\\n* Give a recommendation for or against volunteering abroad and justify it.\",\n    \"hints_en\": [\n      \"Start with a brief introduction to the topic and the article you read.\",\n      \"Clearly state the pros and cons as mentioned in the article. Use phrases like 'According to the article...', 'The article mentions that...'\",\n      \"Make sure to clearly state your own opinion using phrases like 'In my opinion...', 'I believe that...', 'I think that...'\",\n      \"Try to make your personal experience or the experience of others as concrete as possible. What exactly happened? What did they learn?\",\n      \"Conclude with a clear recommendation using phrases like 'I would recommend...', 'I would not recommend...'\",\n      \"Pay attention to your word count and try to write approximately 200 words.\"\n    ]\n  }\n]\n```"},
+                ],
+            },
+            {
+                role: "user",
+                parts: [
+                {text: "Meiner Meinung nach ist es wichtig, Freiwillig im Ausland zu arbeiten"},
+                ],
+            },
+            {
+                role: "model",
+                parts: [
+                {text: "```json\n{\n  \"feedback\": {\n    \"overall_assessment\": \"The sentence is a good start and clearly expresses your opinion. However, it's a bit too short and could benefit from more context. Also there are some minor grammatical errors.\",\n    \"corrections\": [\n      {\n        \"original\": \"Meiner Meinung nach ist es wichtig, Freiwillig im Ausland zu arbeiten\",\n        \"corrected\": \"Meiner Meinung nach ist es wichtig, freiwillig im Ausland zu arbeiten.\",\n        \"explanation_en\": \"The word 'Freiwillig' should be 'freiwillig' (lowercase) because it is an adverb in this sentence.\"\n      }\n    ],\n     \"suggestions_en\": [\n      \"Try to expand on *why* you think it's important. What benefits do you see?\",\n       \"Consider adding a connecting phrase to lead into your opinion, for example, 'After reading the article, I believe that...' or 'Based on my understanding, ...'\"\n     ]\n  }\n}\n```"},
+                ],
+            },
+            ],
+            */
+        });
+    
+        const result = await chatSession.sendMessage("Ich möchte üben");
+        const text = result.response.text();
+        console.log(text);
+        return(text);
+        
+    }
+    
+    var result = run();
+    result.then(resu => res.send(resu));
+})
+
 // POST-Route für das Formular
 app.post("/submit", (req, res) => {
     console.log("gestartet")
