@@ -42,7 +42,7 @@ app.get("/api/tex2fill", (req, res) => {
     async function run() {
         const generationConfig = {
             responseMimeType: "application/json",
-            temperature: 0,
+            temperature: 0.8,
         };
 
         const model = genAI.getGenerativeModel({
@@ -72,7 +72,7 @@ app.get("/api/memory", (req, res) => {
     async function run() {
         const generationConfig = {
             responseMimeType: "application/json",
-            temperature: 0,
+            temperature: 0.8,
         };
 
         const model = genAI.getGenerativeModel({
