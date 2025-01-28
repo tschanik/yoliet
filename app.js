@@ -18,6 +18,11 @@ const genAI = new GoogleGenerativeAI(topsecret.parsed.API_KEY_GOOGLE);
 // Middleware für POST-Daten
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.use(function(req, res, next) {
+    res.setHeader("Content-Security-Policy", "script-src 'self' https://cdnjs.cloudflare.com");
+    return next();
+});
+
 // Setze EJS als Template-Engine
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
