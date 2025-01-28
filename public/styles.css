@@ -18,9 +18,50 @@ html, body {
     padding: .25rem;
 }
 
-.select_extras {
-    margin: .25rem;
-    padding: .25rem;
+.button-container {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.btn {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: 1px solid #757575;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    background-color: #1E1E1E;
+    color: rgba(255, 255, 255, 0.568);
+}
+
+.btn i {
+    margin-right: 8px;
+}
+
+.memory {
+}
+
+.memory:hover {
+}
+
+.text {
+    background-color: #2196F3;
+    color: white;
+}
+
+.text:hover {
+    background-color: #1e88e5;
+}
+
+.exam-simulation {
+    background-color: #f44336;
+    color: white;
+}
+
+.exam-simulation:hover {
+    background-color: #e53935;
 }
 
 /* Style the buttons that are used to open and close the accordion panel */
@@ -234,7 +275,6 @@ footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
-
 }
 
 #impressum {

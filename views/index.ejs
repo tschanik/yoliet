@@ -14,6 +14,7 @@
     <meta property="og:url" content="https://yoliet.de">
     <link rel="icon" type="image/x-icon" href="/images/YOliet.ico">
     <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <script>
 
@@ -244,12 +245,25 @@
 
                     const data = await result.json();
                     skeleton.style.display = "none";
+
                     
                     result_output.innerHTML += data["instructions_de"];
                     result_output.innerHTML += "<br><br>";
                     result_output.innerHTML += data["instructions_en"];
-                    result_output.innerHTML += "<br><br>";
-                    result_output.innerHTML += data["hints_en"][0];
+                    linebreak = document.createElement("br");
+                    result_output.appendChild(linebreak);
+                    const tipsTitle = document.createElement('h3');
+                    tipsTitle.style.marginTop = "2rem";
+                    tipsTitle.textContent = 'Tipps:';
+                    result_output.appendChild(tipsTitle);
+                    const tipsList = document.createElement('ul');
+                    const tipps = data["hints_en"];
+                    tipps.forEach(tip => {
+                        const tipItem = document.createElement('li');
+                        tipItem.textContent = tip;
+                        tipsList.appendChild(tipItem);
+                    });
+                    result_output.appendChild(tipsList);
                 }
 
                 getExam();
@@ -446,17 +460,17 @@
                 <button type="submit" hidden>Submit</button>
             </form>
 
-            <button class="select_extras" id="showmemory" type="submit">
-                <span class="">Memory</span>
-            </button>
-            
-            <button class="select_extras" id="text2fill">
-                <span class="">Text</span>
-            </button>
-
-            <button class="select_extras" id="exam">
-                <span class="">Exam Simulation</span>
-            </button>
+            <div class="button-container">
+                <button class="btn" id="showmemory">
+                    <i class="fas fa-brain"></i> Memory
+                </button>
+                <button class="btn" id="text2fill">
+                    <i class="fas fa-file-alt"></i> Text
+                </button>
+                <button class="btn" id="exam">
+                    <i class="fas fa-clipboard-list"></i> Exam Simulation
+                </button>
+            </div>
             
 
             <div class="result" id="current_result">
