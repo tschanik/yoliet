@@ -282,11 +282,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const corrected = document.createElement("h3");
             corrected.className = "correction";
-            correction = result["title"];
+            correction = result["corrected_sentence"];
             corrected.innerText = correction;
             result_div.appendChild(corrected);
+            result_div.innerHTML += result["english_translation"];
+            result_div.innerHTML += result["grammar_explanation"];
 
-            result_output.innerHTML += result["blabla"];
+            const tipsTitle = document.createElement('h3');
+            tipsTitle.style.marginTop = "2rem";
+            tipsTitle.textContent = 'Tipps:';
+            result_div.appendChild(tipsTitle);
+            const tipsList = document.createElement('ul');
+            const tipps = result["tipps"];
+            tipps.forEach(tip => {
+                const tipItem = document.createElement('li');
+                tipItem.textContent = tip;
+                tipsList.appendChild(tipItem);
+            });
+            result_div.appendChild(tipsList);
     });
 
     function move_to_accordion() {
