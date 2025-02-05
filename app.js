@@ -84,6 +84,29 @@ app.post("/api/memory", (req, res) => {
 
     const userLearning = req.body.learn;
     console.log(userLearning);
+    var message;
+    switch (userLearning) {
+        case 'english':
+            message = `You are an AI that outputs a list of words with the article and the corresponding icon and a unique color in hex format. Only the list is returned in a JSON format. Example: [{"icon": "🎨","text": "the color","color": "#DA70D6"}]`;
+            break;
+        case 'german':
+            message = `Du bist eine KI, die eine Liste an Wörtern mit dem Artikel ausgibt und den und das entsprechende icon sowie eine einzigartige Farbe im hex Format. Gib nur die Liste ist in einem JSON Format zurück. Beispiel: [{"icon": "🎨","text": "die Farben","color": "#DA70D6"}]`;
+            break;
+        case 'spanish':
+            message = `Es una IA que devuelve una lista de palabras con el artículo y el icono correspondiente y un color único en formato hexadecimal. Sólo se devuelve la lista en formato JSON. Ejemplo: [{"icon": "🎨","text": "los colores","color": "#DA70D6"}]`;
+            break;
+        case 'french':
+            message = `Tu es une IA qui renvoie une liste de mots avec l'article et l'icône correspondante ainsi qu'une couleur unique au format hex. Ne renvoie que la liste est dans un format JSON. Exemple: [{"icon": "🎨","text": "Les couleurs","color": "#DA70D6"}]`;
+            break;
+        case 'italian':
+            message = `Si tratta di un'intelligenza artificiale che restituisce un elenco di parole con l'articolo e l'icona corrispondente e un colore unico in formato esadecimale. Solo l'elenco viene restituito in formato JSON. Esempio: [{"icon": "🎨","text": "I colori","color": "#DA70D6"}]`;
+            break;
+        case 'swedish':
+            message = `Du är en AI som matar ut en lista med ord med artikeln och motsvarande ikon och en unik färg i hex-format. Endast listan returneras i JSON-format. Exempel: [{"icon": "🎨","text": "färgerna","color": "#DA70D6"}]`;
+            break;
+    }
+
+
 
     async function run() {
         const generationConfig = {
@@ -93,7 +116,7 @@ app.post("/api/memory", (req, res) => {
 
         const model = genAI.getGenerativeModel({
             model: "gemini-2.0-flash-exp",
-            systemInstruction: `Du bist eine KI, die eine Liste an Wörtern mit dem Artikel ausgibt und den und das entsprechende icon sowie eine einzigartige Farbe im hex Format. Gib nur die Liste ist in einem JSON Format zurück. Beispiel: [{"icon": "🎨","text": "die Farben","color": "#DA70D6"}]`,
+            systemInstruction: message,
             generationConfig: generationConfig,
         });
       
@@ -216,7 +239,7 @@ app.post("/submit", (req, res) => {
     var message;
     switch (userLearning) {
         case 'english':
-            message = "Correct and rephrase user text grammar errors. Always show the corrected sentence first in apostroph.";
+            message = `You are a english teacher, and I need help reviewing my english sentences. JSON format: {corrected_sentence: "", english_translation: "", grammar_explanation: "", tipps: []}`;
             break;
         case 'german':
             message = `You are a German teacher, and I need help reviewing my German sentences. Check if my sentence is grammatically correct. Provide the following:
@@ -231,16 +254,16 @@ app.post("/submit", (req, res) => {
                         JSON format: {corrected_sentence: "", english_translation: "", grammar_explanation: "", tipps: []}`;
             break;
         case 'spanish':
-            message = "Corrige y reformula los errores gramaticales del texto del usuario delimitado por apóstrofo. Muestra una tabla de declinación.";
+            message = `You are a spanish tacher, and I need help reviewing my spanish sentences. JSON format: {corrected_sentence: "", english_translation: "", grammar_explanation: "", tipps: []}`;
             break;
         case 'french':
-            message = "Corrigez et reformulez les fautes de grammaire du texte de l'utilisateur. La phrase corrigée doit toujours apparaître en premier en apostrophe. montrer les règles qui se cachent derrière.";
+            message = `You are a french tacher, and I need help reviewing my french sentences. JSON format: {corrected_sentence: "", english_translation: "", grammar_explanation: "", tipps: []}`;
             break;
         case 'italian':
-            message = "Corregge e riformula gli errori grammaticali del testo dell'utente delimitato da apostrofo. Visualizza una tabella di declinazione.";
+            message = `You are a italian tacher, and I need help reviewing my italian sentences. JSON format: {corrected_sentence: "", english_translation: "", grammar_explanation: "", tipps: []}`;
             break;
         case 'swedish':
-            message = "Korrigerar och omformulerar grammatiska fel i användartext avgränsad av apostrof. Visar en tabell över böjning.";
+            message = `You are a swedish tacher, and I need help reviewing my swedish sentences. JSON format: {corrected_sentence: "", english_translation: "", grammar_explanation: "", tipps: []}`;
             break;
     }
     
